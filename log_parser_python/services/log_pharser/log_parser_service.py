@@ -89,20 +89,3 @@ class LogParserService:
         with open(self.log_file_path, 'r') as file:
             log_line = file.readlines()
         return log_line
-
-
-if __name__ == '__main__':
-    log_file_path = '/home/ishwor/Documents/c++/distributed parallel/individual_react/individual_dpc/log_parser_python/resources/archive/logfiles.log'
-
-    log_parser = LogParserService(log_file_path)
-    log_lines = log_parser.read_log_file()
-
-    num_processes = multiprocessing.cpu_count()
-    pool = multiprocessing.Pool(processes=num_processes)
-
-    ip_addresses = pool.map(log_parser.extract_ip_address, log_lines)
-    os_info = pool.map(log_parser.extract_os_info, log_lines)
-    browser_info = pool.map(log_parser.extract_browser_info, log_lines)
-    time_info = pool.map(log_parser.extract_times_from_log_file, log_lines)
-
-    print(ip_addresses)
