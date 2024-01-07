@@ -1,5 +1,5 @@
 import multiprocessing
-from log_parser_python.services.log_pharser.log_parser_service import LogParserService
+from log_parser_python.services.log_parser.log_parser_service import LogParserService
 
 class LogParserServiceExample:
     def __init__(self, log_file_path):
