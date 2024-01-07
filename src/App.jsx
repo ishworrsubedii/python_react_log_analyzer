@@ -1,28 +1,32 @@
-import React from 'react';
-import PiechartExample from './pages/piechart';
-import BargrphExample from './pages/bargraph';
-// import GeographyExample from './pages/geograph';
+// App.jsx
 
-// import UsersByTimeOfDayDashboard from './pages/timedashboard';
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import CustomSidebar from "./pages/global/sidebar";
+import BargraphExample from "./pages/bargraph";
+import PieChartExample from "./pages/piechart";
+import LineChartExample from "./pages/linechart";
+import GeoChartExample from "./pages/geo";
+import Dashboard from "./pages/dashboard";
 
-
-function App() {
+const App = () => {
   return (
-    <div>
-      <p style={{display:'flex',justifyContent:'center', textAlign: 'center', fontSize: 30, paddingBottom: 40 }}>Individual Assignment of Distributed and Parallel Computing</p>
+    <Router>
+      <div style={{ display: "flex" }}>
+        <CustomSidebar />
 
-      <div style={{ display: 'flex', width: '100%', maxWidth: '1200px', margin: '0 auto',alignContent:'center', justifyContent:'left'}}>
-        <div style={{ flex: 1 }}>
-          <PiechartExample />
-        </div>
-        <div style={{ flex: 1 }}>
-          <BargrphExample />
-        </div>
-        <div>
-            {/* <GeographyExample/> */}
+        <div style={{ marginLeft: "200px", padding: "20px", width: "100%" }}>
+          <Routes>
+          <Route path="/" element={<Dashboard/>} />
+
+            <Route path="/bar" element={<BargraphExample />} />
+            <Route path="/pie" element={<PieChartExample />} />
+            <Route path="/line" element={<LineChartExample />} />
+            <Route path="/geography" element={<GeoChartExample />} />
+          </Routes>
         </div>
       </div>
-    </div>
+    </Router>
   );
 }
 
