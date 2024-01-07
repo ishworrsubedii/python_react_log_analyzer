@@ -1,20 +1,34 @@
+from concurrent.futures import ThreadPoolExecutor
+
 import uvicorn
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
 import requests
 from collections import Counter
 
 from log_parser_python.example.log_parser_example import LogParserServiceExample
 
 app = FastAPI()
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # Add the origin of your React app
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 log_file_path = '/home/ishwor/Documents/c++/distributed parallel/individual_react/individual_dpc/log_parser_python/resources/logfiles.log'
 log_parser_example = LogParserServiceExample(log_file_path)
 
 os_info_counter = Counter()
 browser_info_counter = Counter()
 time_info_counter = Counter()
+unique_ips = set(log_parser_example.ip_info()[:40])  # Limit to the first 4000 unique IPs
+country_counts = Counter()
 
-
-@app.post("/os-info")
+@app.get("/os-info")
 async def get_os_info():
     global os_info_counter
     os_info_list = log_parser_example.os_info()
@@ -22,7 +36,7 @@ async def get_os_info():
     return {"message": os_info_counter}
 
 
-@app.post("/browser-info")
+@app.get("/browser-info")
 async def get_browser_info():
     global browser_info_counter
     browser_info_list = log_parser_example.browser_info()
@@ -30,47 +44,31 @@ async def get_browser_info():
     return {"message": browser_info_counter}
 
 
-@app.post("/time-info")
+@app.get("/time-info")
 async def get_time_info():
     global time_info_counter
     time_info_list = log_parser_example.time_info()
     time_info_counter.update(time_info_list)
-    return {"message": time_info_counter}
+    return {"message": dict(time_info_counter)}
 
+def fetch_country(ip_address):
+    try:
+        url = f"http://ip-api.com/csv/{ip_address}?fields=country"
+        response = requests.get(url)
+        response.raise_for_status()  # Raise an HTTPError for bad responses
+        country = response.text.strip()
+        country_counts[country] += 1
+    except requests.exceptions.RequestException as e:
+        print(f"Error processing IP {ip_address}: {e}")
+    except Exception as e:
+        print(f"Unexpected error processing IP {ip_address}: {e}")
 
-unique_ip_country = {}
-country_counts = Counter()
+@app.get("/ip-counts")
+async def get_ip_counts(max_threads: int = 10):
+    with ThreadPoolExecutor(max_threads) as executor:
+        executor.map(fetch_country, unique_ips)
 
-
-@app.get("/ip-info")
-async def get_ip_info():
-    global country_counts, unique_ip_country
-
-    ip_info_list = log_parser_example.ip_info()
-    unique_ips = set(ip_info_list)  # Get unique IP addresses
-    # unique_country_counts = Counter()
-    #
-    # for ip_address in unique_ips:
-    #     url = f"http://ip-api.com/csv/{ip_address}?fields=country"
-    #     response = requests.get(url)
-    #
-    #     if response.status_code == 200:
-    #         country = response.text.strip()
-    #         unique_ip_country[ip_address] = country  # Assign country to IP
-    #         unique_country_counts[country] += 1  # Count occurrences of each country for unique IPs
-    #     else:
-    #         raise HTTPException(status_code=response.status_code, detail="Failed to fetch IP information")
-    #
-    # country_counts.update(unique_country_counts)  # Update overall country count
-
-    return {"unique_ip_count": (unique_ips)}
-
-
-@app.get("/country-counts")
-async def get_country_counts():
-    global country_counts
-    return {"country_counts": dict(country_counts)}
-
+    return dict(country_counts)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
