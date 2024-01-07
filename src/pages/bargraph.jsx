@@ -1,38 +1,54 @@
-import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { textAlign } from '@mui/system';
+import React, { useState, useEffect } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-function BargrphExample() {
-    const data = [
-        { data: [3], stack: 'A', label: 'Series A1' },
-        { data: [8], stack: 'A', label: 'Series A2' },
-        { data: [4], stack: 'B', label: 'Series B1' },
-        { data: [8], stack: 'B', label: 'Series B2' },
-    ];
+async function fetchData() {
+    const response = await fetch('http://127.0.0.1:8000/os-info', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+        },
+    });
 
-    const textColor = 'white';
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.message;
+}
+
+function BargraphExample() {
+    const [rawData, setRawData] = useState({});
+
+    useEffect(() => {
+        fetchData().then(data => {
+            setRawData(data);
+        }).catch(error => {
+            console.error('Error:', error);
+        });
+    }, []);
+
+    const data = Object.entries(rawData).map(([label, value], index) => ({
+        name: label.split(';')[0],
+        value,
+    }));
 
     return (
-        <div style={{ width: 800, height: 600 }}>
-            <p style={{ textAlign: 'center', marginBottom:100 }}>Pie Chart</p>
-
+        <div style={{ width: '100vh', height: 800 }}>
+            <h2 style={{textAlign:'center'}}>BarGraph Visualization of Operating System Info</h2>
             <ResponsiveContainer>
                 <BarChart data={data}>
-                    <XAxis dataKey="label" stroke={textColor} />
-                    <YAxis stroke={textColor} />
-                    <Legend wrapperStyle={{ color: textColor }} />
-                    <Tooltip cursor={{ fill: textColor }} />
-                    {data.map((entry, index) => (
-                        <Bar
-                            key={index}
-                            dataKey={`data[${index}]`}
-                            stackId={entry.stack}
-                            fill={`#${Math.floor(Math.random() * 16777215).toString(16)}`}
-                        />
-                    ))}
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="value" fill="#8884d8" />
                 </BarChart>
             </ResponsiveContainer>
         </div>
     );
 }
 
-export default BargrphExample;
+export default BargraphExample;
