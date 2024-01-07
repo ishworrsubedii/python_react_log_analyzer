@@ -1,36 +1,62 @@
-import React from 'react';
-import { PieChart as MuiPieChart, Pie, ResponsiveContainer } from 'recharts';
+import { textAlign } from '@mui/system';
+import React, { useState, useEffect } from 'react';
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-function PiechartExample() {
-  const data = [
-    { name: 'Label 1', value: 30 },
-    { name: 'Label 2', value: 50 },
-    { name: 'Label 3', value: 20 },
-  ];
+async function fetchData() {
+  const response = await fetch('http://127.0.0.1:8000/browser-info', {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+    },
+  });
 
-  return (
-    <>
-      <div style={{ width: 800, height: 600 }}>
-      <p style={{ textAlign: 'center', marginBottom:100 }}>Pief Chart</p>
-        <ResponsiveContainer>
-          <MuiPieChart>
-            <Pie
-              dataKey="value"
-              data={data}
-              cx="50%"
-              cy="50%"
-              outerRadius={300}
-              fill="#8884d8"
-              label
-            />
-          </MuiPieChart>
-        </ResponsiveContainer>
-        
-      </div>
-    </>
-  );
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data.message;
 }
 
+function PiechartExample() {
+  const [rawData, setRawData] = useState({});
 
+  useEffect(() => {
+    fetchData().then(data => {
+      setRawData(data);
+    }).catch(error => {
+      console.error('Error:', error);
+    });
+  }, []);
+
+  const data = Object.entries(rawData).map(([name, value]) => ({ name, value }));
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+
+  return (
+    <div style={{ width: '100vh', height: 800 }}>
+      <h2 style={{textAlign:'center'}}>PieChart Visualization of Browser Info</h2>
+      <ResponsiveContainer>
+        <PieChart>
+          <Pie
+            data={data}
+            cx="50%"
+            cy="50%"
+            labelLine={false}
+            outerRadius={200}
+            fill="#8884d8"
+            dataKey="value"
+          >
+            {
+              data.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
+            }
+          </Pie>
+          <Tooltip />
+          <Legend />
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
 
 export default PiechartExample;
