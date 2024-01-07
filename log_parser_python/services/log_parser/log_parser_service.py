@@ -1,3 +1,6 @@
+import re
+
+
 class LogParserService:
     def __init__(self, log_file_path):
         self.log_file_path = log_file_path
@@ -40,41 +43,12 @@ class LogParserService:
         return browser_info
 
     def extract_times_from_log_file(self, log_line):
-        """
-        Extracts timestamps from the log file
-
-        :return: timestamps
-        """
-        timestamps = []
-
-        for line in log_line:
-            timestamp = self.extract_time_from_line(line)
-            if timestamp:
-                timestamps.append(timestamp)
-
-        return timestamps
-
-    @staticmethod
-    def extract_time_from_line(line):
-        """
-        Extracts timestamp from the log line
-
-        :param line: log line
-        :return: timestamp
-        """
-        start_index = line.find('[')
-        end_index = line.find(']')
-
-        if start_index != -1 and end_index != -1:
-            timestamp_section = line[start_index + 1:end_index]
-            date_time_parts = timestamp_section.split()
-
-            if len(date_time_parts) == 2:
-                date = date_time_parts[0]
-                time = date[12:]
-                return time
-
-        return None
+        time_pattern = r'\b\d{2}:\d{2}:\d{2}\b'
+        match = re.search(time_pattern, log_line)
+        if match:
+            return match.group()
+        else:
+            return None
 
     def read_log_file(self):
         """
