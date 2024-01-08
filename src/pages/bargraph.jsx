@@ -35,18 +35,20 @@ function BargraphExample() {
     }));
 
     return (
-        <div style={{ width: '100vh', height: 800 }}>
-            <h2 style={{textAlign:'center'}}>BarGraph Visualization of Operating System Info</h2>
-            <ResponsiveContainer>
-                <BarChart data={data}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="value" fill="#8884d8" />
-                </BarChart>
-            </ResponsiveContainer>
+        <div style={{ position: 'relative', width: '800px', height: '300px' }}>
+            <div style={{ position: 'absolute', top: '300px', left: '800px', transform: 'translate(-50%, -50%)', width: '1000px', height: '300px' }}>
+                <h2 style={{textAlign:'center'}}>BarGraph Visualization of Operating System Info</h2>
+                <ResponsiveContainer>
+                    <BarChart data={data}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Bar dataKey="value" fill="#8884d8" />
+                    </BarChart>
+                </ResponsiveContainer>
+            </div>
         </div>
     );
 }
