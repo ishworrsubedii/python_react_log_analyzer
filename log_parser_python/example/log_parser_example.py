@@ -1,5 +1,11 @@
+"""
+Created By: ishwor subedi
+Date: 2024-01-05
+"""
+
 import multiprocessing
 from log_parser_python.services.log_parser.log_parser_service import LogParserService
+
 
 class LogParserServiceExample:
     def __init__(self, log_file_path):
@@ -26,6 +32,7 @@ class LogParserServiceExample:
     def time_info(self):
         time_info = self.pool.map(self.log_parser.extract_times_from_log_file, self.log_lines)
         return time_info
+
 
 if __name__ == '__main__':
     log_file_path = '/home/ishwor/Documents/c++/distributed parallel/individual_react/individual_dpc/log_parser_python/resources/logfiles.log'
