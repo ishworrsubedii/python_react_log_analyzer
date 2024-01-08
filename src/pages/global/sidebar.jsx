@@ -14,7 +14,7 @@ const SidebarItem = ({ title, to, icon, selected, setSelected }) => {
       <MenuItem
         active={selected === title}
         style={{
-          backgroundColor: "#000",
+          backgroundColor: "#606060",
           color: "#fff",
         }}
         onClick={() => setSelected(title)}
@@ -25,22 +25,26 @@ const SidebarItem = ({ title, to, icon, selected, setSelected }) => {
     </Link>
   );
 };
-
 const CustomSidebar = () => {
   const [selected, setSelected] = useState("");
 
   return (
     <ProSidebar
       style={{
-        width: "200px",
-        height: "500px",
-        background: "#000",
+        position: 'fixed',
+        top: '50%',
+        left: '0',
+        transform: 'translateY(-50%)',
+        width: "px",
+        height: "326px",
+        background: "#606060",
       }}
     >
       <Menu iconShape="square">
-        <Box sx={{ background: "#000", color: "#fff", padding: 2 }}>
+        <Box sx={{ background: "#606060", color: "#fff", padding: 2 }}>
           <SidebarItem
             title="Dashboard"
+            backgroundColor="#fff"
             to="/"
             icon={<HomeOutlinedIcon />}
             selected={selected}
