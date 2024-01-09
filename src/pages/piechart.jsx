@@ -34,7 +34,7 @@ function PiechartExample() {
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
   return (
-    <div style={{ width: '500px', height: '500px' }}>
+    <div style={{ width: '500px', height: '500px' ,alignContent:'center'}}>
             <h2 style={{textAlign:'center'}}>PieChart Visualization of Browser Info</h2> 
 
       <ResponsiveContainer>
