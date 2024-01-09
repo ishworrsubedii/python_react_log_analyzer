@@ -14,10 +14,9 @@ from log_parser_python.example.log_parser_example import LogParserServiceExample
 
 app = FastAPI()
 
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"], 
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -30,6 +29,7 @@ os_info_counter = Counter()
 browser_info_counter = Counter()
 time_info_counter = Counter()
 country_counts = Counter()
+
 
 @app.get("/os-info")
 async def get_os_info():
@@ -49,39 +49,17 @@ async def get_browser_info():
 
 @app.get("/time-info")
 async def get_time_info():
-    global time_info_counter
     time_info_list = log_parser_example.time_info()
-    time_info_counter.update(time_info_list)
-    return {"message": dict(time_info_counter)}
+    return {"message": (time_info_list)}
 
 
-
-@lru_cache(maxsize=None)
-async def fetch_country_async(ip_address, session, max_retries=100, delay=1):
-    for attempt in range(max_retries):
-        try:
-            url = f"http://ip-api.com/csv/{ip_address}?fields=country"
-            async with session.get(url) as response:
-                response.raise_for_status()
-                country = await response.text()
-                country=country.split('\n')[0]
-                country_counts[country] += 1
-                break
-        except aiohttp.ClientError as e:
-            print(f"Error processing IP {ip_address}: {e}")
-        except Exception as e:
-            print(f"Unexpected error processing IP {ip_address}: {e}")
-        await asyncio.sleep(delay) 
-
-
-@app.get("/ip-counts")
+@app.get("/country-info")
 async def get_ip_counts_async():
-    max_connections = 100
-    async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit_per_host=max_connections)) as session:
-        tasks = [fetch_country_async(ip, session) for ip in unique_ips]
-        await asyncio.gather(*tasks)
+    global country_counts
+    country_info = log_parser_example.country_info()
+    country_counts.update(country_info)
+    return {"message": country_counts}
 
-    return dict(country_counts)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
