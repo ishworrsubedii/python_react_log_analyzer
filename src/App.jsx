@@ -6,8 +6,9 @@ import CustomSidebar from "./pages/global/sidebar";
 import BargraphExample from "./pages/bargraph";
 import PieChartExample from "./pages/piechart";
 import LineChartExample from "./pages/linechart";
-import GeoChartExample from "./pages/geo";
+import GeoChartExample from "./pages/geo.jsx";
 import Dashboard from "./pages/dashboard";
+import HeatmapExample from "./pages/heatmap";
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
             <Route path="/pie" element={<PieChartExample />} />
             <Route path="/line" element={<LineChartExample />} />
             <Route path="/geography" element={<GeoChartExample />} />
+            <Route path="/heatmap" element={<HeatmapExample />} />
           </Routes>
         </div>
       </div>
