@@ -36,7 +36,7 @@ function BargraphExample() {
 
     return (
         <div style={{ position: 'relative', width: '800px', height: '300px' }}>
-            <div style={{ position: 'absolute', top: '300px', left: '800px', transform: 'translate(-50%, -50%)', width: '1000px', height: '300px' }}>
+            <div style={{ position: 'absolute', top: '300px', left: '600px', transform: 'translate(-50%, -50%)', width: '1000px', height: '300px' }}>
                 <h2 style={{textAlign:'center'}}>BarGraph Visualization of Operating System Info</h2>
                 <ResponsiveContainer>
                     <BarChart data={data}>
