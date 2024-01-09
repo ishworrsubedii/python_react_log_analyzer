@@ -17,9 +17,9 @@ class LogParserServiceExample:
         self.pool.close()
         self.pool.join()
 
-    def ip_info(self):
-        ip_addresses = self.pool.map(self.log_parser.extract_ip_address, self.log_lines)
-        return ip_addresses
+    def country_info(self):
+        country_infoo = self.pool.map(self.log_parser.extract_country, self.log_lines)
+        return country_infoo
 
     def os_info(self):
         os_info = self.pool.map(self.log_parser.extract_os_info, self.log_lines)
