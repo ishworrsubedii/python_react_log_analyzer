@@ -1,20 +1,22 @@
 import re
+from datetime import datetime
 
 
 class LogParserService:
     def __init__(self, log_file_path):
         self.log_file_path = log_file_path
 
-    def extract_ip_address(self, log_line):
-        """
-        Extracts IP address from the log line
+    def extract_country(self, log_line):
 
-        :return: IP address
         """
-        parts = log_line.split('"')
-        ip_address = parts[0].split()[0]
+        Extracts country from the log line.
 
-        return ip_address
+            :param log_line: Log line to extract country from
+            :return: Extracted country information
+        """
+
+        country_info = log_line.split(' - ')[0].strip()
+        return country_info
 
     def extract_os_info(self, log_line):
         """
@@ -43,10 +45,19 @@ class LogParserService:
         return browser_info
 
     def extract_times_from_log_file(self, log_line):
-        time_pattern = r'\b\d{2}:\d{2}:\d{2}\b'
-        match = re.search(time_pattern, log_line)
+        datetime_pattern = r'\[(\d{2}/\w+/\d{4}:\d{2}:\d{2}:\d{2} \+\d{4})\]'
+
+        match = re.search(datetime_pattern, log_line)
+
         if match:
-            return match.group()
+            datetime_str = match.group(1)
+
+            datetime_obj = datetime.strptime(datetime_str, '%d/%b/%Y:%H:%M:%S %z')
+
+            date_str = datetime_obj.strftime('%Y-%m-%d')
+            time_str = datetime_obj.strftime('%H:%M:%S')
+
+            return {'date': date_str, 'time': time_str}
         else:
             return None
 
