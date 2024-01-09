@@ -1,35 +1,45 @@
+// Dashboard.jsx
 import React from 'react';
-import Divider from '@mui/material-next/Divider';
-
+import Divider from '@mui/material/Divider';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 import BargraphExample from "./bargraph";
 import PieChartExample from "./piechart";
 import LineChartExample from "./linechart";
 import GeoChartExample from "./geo";
+import HeatmapExample from './heatmap';
+import './dashboard.css';
 
 const Dashboard = () => {
     return (
-        <div style={{ position: 'relative', height: '100vh' }}>
-            <div style={{ position: 'absolute', top: '20px', bottom: '1000px', left: '50px', right: '0', margin: 'auto', maxWidth: '50%', height: '150px' }}>
-                <BargraphExample />
-            </div>
-            <Divider style={{ borderTop: '1px dashed #fffff' }} orientation="horizontal" variant="inset" />
-            <div style={{ position: 'relative', height: '100vh' }}>
-                <div style={{ position: 'absolute', top: '200px', bottom: '0', left: '100px', right: '0', margin: 'auto', maxWidth: '50%', height: '100px' }}>
-                    <PieChartExample />
-                </div>
-                <div style={{ position: 'absolute', top: '200px', bottom: '0', left: '900px', right: '0', margin: 'auto', maxWidth: '50%', height: '100px' }}>
+        <div className="dashboard-container">
+            <Card className="card line-chart-card" style={{ backgroundColor: '#282c34' }}>
+            <CardContent style={{ color: 'white' }}>
+                    <BargraphExample />
+                </CardContent>
+            </Card>
+            <Divider className="divider" orientation="horizontal" variant="inset" />
+            <Card className="card geo-chart-card" style={{ backgroundColor: '#282c34' }}>
+                <CardContent style={{ color: 'white' }}>
                     <GeoChartExample />
-                </div>
-                <div style={{ position: 'absolute', top: '1300px', bottom: '0', left: '350px', right: '0', margin: 'auto', maxWidth: '1000px', height: '200px' }}>      
-                    <LineChartExample />        
-                    </div>
+                </CardContent>
+            </Card>
+            <Divider className="divider" orientation="horizontal" variant="inset" />
+            <Card className="card pie-chart-card" style={{ backgroundColor: '#282c34' }}>
+                <CardContent style={{ color: 'white' }}>
+                    <PieChartExample />
+                </CardContent>
+            </Card>
+            <Divider className="divider" orientation="horizontal" variant="inset" />
+            <Card className="card bar-graph-card" style={{ backgroundColor: '#282c34' }}>
+                
+                <CardContent style={{ color: 'white' }}>
+                    <LineChartExample />
+                </CardContent>
+            </Card>
 
-            </div>
-            
         </div>
     );
-
-
 };
 
 export default Dashboard;
